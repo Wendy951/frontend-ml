@@ -1,4 +1,4 @@
-const API_URL ="http://localhost:8080/api/v1/"
+const API_URL ="http://z138yq42iq5j2doui1731hln.2.25.90.130.sslip.io/api/v1/"
 
 
 //metodo helper para obtener las cabeceras con jwt
