@@ -88,7 +88,7 @@ export const apiService = {
 
 
     },
-     getProducto: async() =>{
+     getProducto: async(id) =>{
         const response = await fetch(
             API_URL+'productos/'+id,
             {headers: getHeaders()}
@@ -150,7 +150,7 @@ export const apiService = {
 
 
     },
-     getCategoria: async() =>{
+     getCategoria: async(id) =>{
         const response = await fetch(
             API_URL+'categorias/'+id,
             {headers: getHeaders()}
@@ -210,7 +210,7 @@ export const apiService = {
 
 
     },
-     getCliente: async() =>{
+     getCliente: async(id) =>{
         const response = await fetch(
             API_URL+'clientes/'+id,
             {headers: getHeaders()}
@@ -270,7 +270,7 @@ export const apiService = {
 
 
     },
-     getProveedor: async() =>{
+     getProveedor: async(id) =>{
         const response = await fetch(
             API_URL+'proveedores/'+id,
             {headers: getHeaders()}
@@ -353,7 +353,7 @@ export const apiService = {
 
 
     },
-     getVenta: async() =>{
+     getVenta: async(id) =>{
         const response = await fetch(
             API_URL+'ventas/'+id,
             {headers: getHeaders()}
@@ -403,7 +403,7 @@ export const apiService = {
     },
 
     //metodos de pagos
-    crearIntencionPago: async () => {
+    crearIntencionPago: async (idVenta) => {
         const response = await fetch(API_URL+"/pagos/crear-intencion",
         {
             method:'POST',
