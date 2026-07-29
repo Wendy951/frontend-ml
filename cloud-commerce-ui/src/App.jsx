@@ -4,7 +4,7 @@ import {Catalogo} from './components/Catalogo';
 import { Navbar } from './components/Navbar';
 import { Registro } from './components/Registro';
 import { Login} from './components/Login';
-import { apiService } from './Services/apiService';
+import { apiService } from './services/apiService';
 import { AdminDashboard } from './components/adminDashboard';
 import { ClienteDashboard } from './components/ClienteDashboard';
 import { Cart } from './components/Cart';
