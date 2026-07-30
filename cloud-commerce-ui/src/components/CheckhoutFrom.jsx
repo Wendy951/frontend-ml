@@ -7,7 +7,7 @@ import { CreditCard, CheckCircle2, ShieldAlert, Loader2, Play } from 'lucide-rea
 // Clave pública de prueba de Stripe. Puede ser reemplazada por una clave real 'pk_test_...'
 const stripePromise = loadStripe('pk_test_51Twjt1PLLUS75bXUNji93o5m7yN5nrFHvVpzs4IA4K7axidAMmsNRZAmHcSKzURmkqBOdfz94TDj2sDulCzWw3fW00eevjUQGK');
 
-const PaymentForm = ({ venta, onPaymentSuccess, setCurrentTab }) => {
+const PaymentForm = ({ venta, onPaymentSuccess }) => {
   const stripe = useStripe();
   const elements = useElements();
   
@@ -160,7 +160,7 @@ const PaymentForm = ({ venta, onPaymentSuccess, setCurrentTab }) => {
   );
 };
 
-export const CheckoutForm = ({ ventaActiva, setCurrentTab }) => {
+export const CheckoutForm = ({ ventaActiva, setVistaActual }) => {
   const [pagado, setPagado] = useState(false);
 
   if (!ventaActiva) {
@@ -169,7 +169,7 @@ export const CheckoutForm = ({ ventaActiva, setCurrentTab }) => {
         <h3 className="font-bold text-lg text-gray-800">No hay ninguna venta activa</h3>
         <p className="text-gray-500 text-sm mt-1">Regresa al catálogo y añade productos para realizar el pago.</p>
         <button
-          onClick={() => setCurrentTab('catalog')}
+          onClick={() => setVistaActual('catalogo')}
           className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-xl text-sm font-bold cursor-pointer"
         >
           Ver Catálogo
@@ -197,13 +197,13 @@ export const CheckoutForm = ({ ventaActiva, setCurrentTab }) => {
         </div>
         <div className="flex gap-3">
           <button
-            onClick={() => setCurrentTab('miscompras')}
+            onClick={() => setVistaActual('miscompras')}
             className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl text-sm font-bold shadow-sm transition-colors cursor-pointer"
           >
             Ver Mis Compras
           </button>
           <button
-            onClick={() => setCurrentTab('catalog')}
+            onClick={() => setVistaActual('catalogo')}
             className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 rounded-xl text-sm font-bold transition-colors cursor-pointer"
           >
             Seguir Comprando
@@ -245,7 +245,6 @@ export const CheckoutForm = ({ ventaActiva, setCurrentTab }) => {
           <PaymentForm 
             venta={ventaActiva} 
             onPaymentSuccess={handlePaymentSuccess} 
-            setCurrentTab={setCurrentTab} 
           />
         </Elements>
       </div>
