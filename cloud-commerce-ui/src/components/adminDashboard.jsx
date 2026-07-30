@@ -117,7 +117,7 @@ export const AdminDashboard = ({}) => {
     setErrorFormulario("");
     const datosIniciales =
       tipo === "producto"
-        ? { nombre: "", descripcion: "", precio: "", stock: "", imagenUrl: "", categoriaId: "" }
+        ? { nombre: "", descripcion: "", precio: "", stock: "", imagenUrl: "", categoriaId: "", proveedorId: "" }
         : tipo === "categoria"
         ? { nombre: "" }
         : tipo === "proveedor"
@@ -138,6 +138,7 @@ export const AdminDashboard = ({}) => {
             stock: item.stock,
             imagenUrl: item.imagenUrl || "",
             categoriaId: item.categoria?.id || "",
+            proveedorId: item.proveedor?.id || "",
           }
         : tipo === "categoria"
         ? { id: item.id, nombre: item.nombre }
@@ -169,7 +170,7 @@ export const AdminDashboard = ({}) => {
 
     try {
       if (modal.tipo === "producto") {
-        const { id, nombre, descripcion, precio, stock, imagenUrl, categoriaId } = modal.datos;
+        const { id, nombre, descripcion, precio, stock, imagenUrl, categoriaId, proveedorId } = modal.datos;
         if (!nombre || precio === "" || stock === "") {
           setErrorFormulario("Nombre, precio y stock son obligatorios.");
           setGuardando(false);
@@ -183,6 +184,9 @@ export const AdminDashboard = ({}) => {
           imagenUrl,
           categoria: categoriaId
             ? { id: Number(categoriaId) }
+            : null,
+          proveedor: proveedorId
+            ? { id: Number(proveedorId) }
             : null,
         };
 
@@ -1052,6 +1056,23 @@ export const AdminDashboard = ({}) => {
                 {categorias.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                Proveedor
+              </label>
+              <select
+                value={modal.datos.proveedorId}
+                onChange={(e) => actualizarCampoModal("proveedorId", e.target.value)}
+                className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-600 text-sm text-gray-900 bg-white"
+              >
+                <option value="">Sin proveedor</option>
+                {proveedores.map((prov) => (
+                  <option key={prov.id} value={prov.id}>
+                    {prov.nombre}
                   </option>
                 ))}
               </select>
