@@ -300,16 +300,6 @@ export const AdminDashboard = ({}) => {
     }
   };
 
-  const eliminarVenta = async (venta) => {
-    if (!window.confirm(`¿Eliminar la venta pendiente #${venta.id}? Esto devolverá el stock de los productos.`)) return;
-    try {
-      await apiService.eliminarVentas(venta.id);
-      setVentas((prev) => prev.filter((v) => v.id !== venta.id));
-    } catch (err) {
-      setError("No se pudo eliminar la venta.. " + err);
-    }
-  };
-
   if (carga) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
@@ -713,7 +703,7 @@ export const AdminDashboard = ({}) => {
                         })}
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center justify-end gap-2">
+                        <div className="flex items-center justify-end">
                           <button
                             onClick={() => setDetalleVenta(venta)}
                             className="p-2 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 transition-colors cursor-pointer"
@@ -721,15 +711,6 @@ export const AdminDashboard = ({}) => {
                           >
                             <Eye className="w-4 h-4" />
                           </button>
-                          {venta.estadoPago === "PENDIENTE" && (
-                            <button
-                              onClick={() => eliminarVenta(venta)}
-                              className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors cursor-pointer"
-                              title="Eliminar venta pendiente"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          )}
                         </div>
                       </td>
                     </tr>
@@ -739,6 +720,81 @@ export const AdminDashboard = ({}) => {
             </div>
           )}
         </div>
+      )}
+
+      {/* ==================== MODAL: Ver Detalle de Venta ==================== */}
+      {detalleVenta && (
+        <ModalFormulario
+          titulo={`Detalle de la Venta #${detalleVenta.id}`}
+          onCerrar={() => setDetalleVenta(null)}
+        >
+          <div className="space-y-4">
+            <div className="text-sm text-gray-600 space-y-1">
+              <div>
+                <span className="font-bold text-gray-800">Cliente:</span>{" "}
+                {detalleVenta.cliente?.nombre ||
+                  detalleVenta.cliente?.username ||
+                  "N/D"}
+              </div>
+              <div>
+                <span className="font-bold text-gray-800">Fecha:</span>{" "}
+                {detalleVenta.fecha
+                  ? new Date(detalleVenta.fecha).toLocaleDateString("es-MX")
+                  : "N/D"}
+              </div>
+              <div>
+                <span className="font-bold text-gray-800">Estado:</span>{" "}
+                <span className="bg-rose-50 text-rose-700 text-xs font-bold px-2.5 py-1 rounded-full">
+                  {detalleVenta.estadoPago || detalleVenta.estado || "N/D"}
+                </span>
+              </div>
+            </div>
+
+            <div className="border-t border-gray-100 pt-4">
+              <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                Productos
+              </h4>
+              <div className="space-y-2">
+                {(detalleVenta.detalles || []).map((det, idx) => (
+                  <div
+                    key={idx}
+                    className="flex justify-between text-sm text-gray-700 bg-gray-50 rounded-xl px-4 py-2"
+                  >
+                    <span>
+                      {det.producto?.nombre || `Producto #${det.producto?.id}`} (x
+                      {det.cantidad})
+                    </span>
+                    <span className="font-bold text-gray-800">
+                      $
+                      {Number(
+                        det.subTotal ?? det.precioUnitario * det.cantidad
+                      ).toLocaleString("es-MX", { minimumFractionDigits: 2 })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t border-gray-200 pt-3 flex justify-between font-extrabold text-rose-900">
+              <span>Total</span>
+              <span>
+                $
+                {Number(detalleVenta.total ?? 0).toLocaleString("es-MX", {
+                  minimumFractionDigits: 2,
+                })}
+              </span>
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <button
+                onClick={() => setDetalleVenta(null)}
+                className="px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-100 text-sm font-bold transition-colors cursor-pointer"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </ModalFormulario>
       )}
 
       {/* Contenido: Gestión de Clientes */}
@@ -1249,75 +1305,6 @@ export const AdminDashboard = ({}) => {
               </button>
             </div>
           </form>
-        </ModalFormulario>
-      )}
-
-      {/* ==================== MODAL: Ver Detalle de Venta ==================== */}
-      {detalleVenta && (
-        <ModalFormulario
-          titulo={`Detalle de la Venta #${detalleVenta.id}`}
-          onCerrar={() => setDetalleVenta(null)}
-        >
-          <div className="space-y-4">
-            <div className="text-sm text-gray-600 space-y-1">
-              <div>
-                <span className="font-bold text-gray-800">Cliente:</span>{" "}
-                {detalleVenta.cliente?.nombre || detalleVenta.cliente?.username || "N/D"}
-              </div>
-              <div>
-                <span className="font-bold text-gray-800">Fecha:</span>{" "}
-                {detalleVenta.fecha
-                  ? new Date(detalleVenta.fecha).toLocaleDateString("es-MX")
-                  : "N/D"}
-              </div>
-              <div>
-                <span className="font-bold text-gray-800">Estado:</span>{" "}
-                <span className="bg-rose-50 text-rose-700 text-xs font-bold px-2.5 py-1 rounded-full">
-                  {detalleVenta.estadoPago || "N/D"}
-                </span>
-              </div>
-            </div>
-
-            <div className="border-t border-gray-100 pt-4">
-              <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                Productos
-              </h4>
-              <div className="space-y-2">
-                {(detalleVenta.detalles || []).map((det, idx) => (
-                  <div
-                    key={idx}
-                    className="flex justify-between text-sm text-gray-700 bg-gray-50 rounded-xl px-4 py-2"
-                  >
-                    <span>
-                      {det.producto?.nombre || `Producto #${det.producto?.id}`} (x{det.cantidad})
-                    </span>
-                    <span className="font-bold text-gray-800">
-                      ${Number(det.subTotal ?? det.precioUnitario * det.cantidad).toLocaleString("es-MX", { minimumFractionDigits: 2 })}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="border-t border-gray-200 pt-3 flex justify-between font-extrabold text-rose-900">
-              <span>Total</span>
-              <span>
-                $
-                {Number(detalleVenta.total ?? 0).toLocaleString("es-MX", {
-                  minimumFractionDigits: 2,
-                })}
-              </span>
-            </div>
-
-            <div className="flex justify-end pt-2">
-              <button
-                onClick={() => setDetalleVenta(null)}
-                className="px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-100 text-sm font-bold transition-colors cursor-pointer"
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
         </ModalFormulario>
       )}
     </div>
