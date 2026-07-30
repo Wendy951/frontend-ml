@@ -1,14 +1,14 @@
 import React, {useState} from "react";
 import { apiService } from "../services/apiService";
 import { UserPlus, User, Mail, Lock, Phone, MapPin,
-    Shield, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
+    AlertCircle, CheckCircle, XCircle } from 'lucide-react';
     
     export const Registro = ({onRegisterSuccess, onGoToLogin}) => {
 
         const [nombre, setNombre] = useState('');
         const [username, setUsername] = useState('');
         const [password, setPassword] = useState('');
-        const [rol, setRol] = useState('ROLE_CLIENTE');
+        const [rol] = useState('ROLE_CLIENTE'); // el registro público siempre crea cuentas de Cliente
         const [direccion, setDireccion] = useState('');
         const [telefono, setTelefono] = useState('');
         const [error, setError] = useState('');
@@ -70,22 +70,6 @@ import { UserPlus, User, Mail, Lock, Phone, MapPin,
                 </div>
             )}
 
-            {/*Rol Selector*/}
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
-                <Shield className="w-4 h-4 text-rose-500"/> Selecciona tu rol
-                </label>
-                <select
-                    value={rol}
-                    onChange={(e) => setRol(e.target.value)}
-                    className="w-full p-3 rounded-xl border border-gray-300 
-                    focus:ring-2 focus:ring-rose-600"
-                >
-                    <option value="ROLE_CLIENTE">Cliente (Comprador)</option>
-                    <option value="ROLE_ADMIN">Administrador (Jefe)</option>
-                </select>
-
-            </div>
             {/*Nombre Completo*/}
 
     <div>
