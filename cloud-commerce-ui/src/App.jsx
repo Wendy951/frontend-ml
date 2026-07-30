@@ -39,9 +39,9 @@ function App() {
       rol: userData.rol
     });
     if(userData.rol === 'ROLE_ADMIN'){
-      setVistaActual('admin-dashboard');
+      setVistaActual('admin-panel');
     }else{
-      setVentaActiva('catalogo');
+      setVistaActual('catalogo');
     }
   };
   //metodo hadleLogout
@@ -114,6 +114,7 @@ function App() {
          />;
          case 'miscompras':
         return <ClienteDashboard setVistaActual={setVistaActual}
+                       setVentaActiva={setVentaActiva}
                        user = {user}
                       //addToCart = {addToCart}
          />;
