@@ -13,6 +13,7 @@ import {
   XCircle,
   Trash2,
   Loader2,
+  CreditCard,
 } from "lucide-react";
 
 // ---------- Estilo del badge según el estado del pago ----------
@@ -39,7 +40,7 @@ const badgeEstado = (estado) => {
   };
 };
 
-export const ClienteDashboard = ({ user }) => {
+export const ClienteDashboard = ({ user, setVistaActual, setVentaActiva }) => {
   const [compras, setCompras] = useState([]);
   const [carga, setCarga] = useState(true);
   const [error, setError] = useState("");
@@ -215,23 +216,38 @@ export const ClienteDashboard = ({ user }) => {
                       ${Number(venta.total || 0).toLocaleString("es-MX", { minimumFractionDigits: 2 })}
                     </span>
                     {(venta.estadoPago || "").toUpperCase() === "PENDIENTE" && (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          cancelarOrden(venta);
-                        }}
-                        disabled={cancelandoId === venta.id}
-                        className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full bg-red-50 text-red-600 hover:bg-red-100 transition-colors cursor-pointer disabled:opacity-50"
-                        title="Cancelar orden pendiente"
-                      >
-                        {cancelandoId === venta.id ? (
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        ) : (
-                          <Trash2 className="w-3.5 h-3.5" />
-                        )}
-                        Cancelar
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setVentaActiva(venta);
+                            setVistaActual('checkout');
+                          }}
+                          className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full bg-rose-700 text-white hover:bg-rose-800 transition-colors cursor-pointer"
+                          title="Pagar orden pendiente"
+                        >
+                          <CreditCard className="w-3.5 h-3.5" />
+                          Pagar
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            cancelarOrden(venta);
+                          }}
+                          disabled={cancelandoId === venta.id}
+                          className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full bg-red-50 text-red-600 hover:bg-red-100 transition-colors cursor-pointer disabled:opacity-50"
+                          title="Cancelar orden pendiente"
+                        >
+                          {cancelandoId === venta.id ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Trash2 className="w-3.5 h-3.5" />
+                          )}
+                          Cancelar
+                        </button>
+                      </>
                     )}
                     {abierta ? (
                       <ChevronUp className="w-5 h-5 text-gray-400" />
