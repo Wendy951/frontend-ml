@@ -1,12 +1,10 @@
 const API_URL ="http://z138yq42iq5j2doui1731hln.2.25.90.130.sslip.io/api/v1/"
 
-
 //metodo helper para obtener las cabeceras con jwt
 const getHeaders = () => {
     const token = localStorage.getItem('token');
     const headers = {
         'Content-Type': 'application/json',
-      
     };
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
@@ -14,7 +12,6 @@ const getHeaders = () => {
     return headers;
 
 };
-
 //metodo para manejo de errores al api
 const handleResponse=async(response) =>{
 if(!response.ok){
@@ -27,7 +24,6 @@ return await response.json();
 
 //metodo principal de peticiones 
 export const apiService = {
-    
      isAuthenticated: () => {
         return !!localStorage.getItem('token');
     },
