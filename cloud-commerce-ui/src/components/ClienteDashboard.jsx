@@ -11,6 +11,8 @@ import {
   CheckCircle2,
   Clock,
   XCircle,
+  Trash2,
+  Loader2,
 } from "lucide-react";
 
 // ---------- Estilo del badge según el estado del pago ----------
@@ -42,6 +44,7 @@ export const ClienteDashboard = ({ user }) => {
   const [carga, setCarga] = useState(true);
   const [error, setError] = useState("");
   const [ordenAbierta, setOrdenAbierta] = useState(null);
+  const [cancelandoId, setCancelandoId] = useState(null);
 
   useEffect(() => {
     const cargarCompras = async () => {
@@ -70,6 +73,20 @@ export const ClienteDashboard = ({ user }) => {
 
   const alternarOrden = (id) => {
     setOrdenAbierta((prev) => (prev === id ? null : id));
+  };
+
+  const cancelarOrden = async (venta) => {
+    if (!window.confirm(`¿Cancelar la orden #${venta.id}? Esta acción no se puede deshacer.`)) return;
+    setCancelandoId(venta.id);
+    setError("");
+    try {
+      await apiService.eliminarVentas(venta.id);
+      setCompras((prev) => prev.filter((v) => v.id !== venta.id));
+    } catch (err) {
+      setError("No se pudo cancelar la orden. " + (err.message || err));
+    } finally {
+      setCancelandoId(null);
+    }
   };
 
   if (carga) {
@@ -160,8 +177,13 @@ export const ClienteDashboard = ({ user }) => {
                 className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden"
               >
                 {/* Encabezado de la orden (clic para expandir) */}
-                <button
+                <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => alternarOrden(venta.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") alternarOrden(venta.id);
+                  }}
                   className="w-full flex items-center justify-between gap-4 flex-wrap px-6 py-5 hover:bg-gray-50 transition-colors cursor-pointer text-left"
                 >
                   <div className="flex items-center gap-4">
@@ -192,13 +214,32 @@ export const ClienteDashboard = ({ user }) => {
                     <span className="font-extrabold text-rose-900 text-lg">
                       ${Number(venta.total || 0).toLocaleString("es-MX", { minimumFractionDigits: 2 })}
                     </span>
+                    {(venta.estadoPago || "").toUpperCase() === "PENDIENTE" && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          cancelarOrden(venta);
+                        }}
+                        disabled={cancelandoId === venta.id}
+                        className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full bg-red-50 text-red-600 hover:bg-red-100 transition-colors cursor-pointer disabled:opacity-50"
+                        title="Cancelar orden pendiente"
+                      >
+                        {cancelandoId === venta.id ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-3.5 h-3.5" />
+                        )}
+                        Cancelar
+                      </button>
+                    )}
                     {abierta ? (
                       <ChevronUp className="w-5 h-5 text-gray-400" />
                     ) : (
                       <ChevronDown className="w-5 h-5 text-gray-400" />
                     )}
                   </div>
-                </button>
+                </div>
 
                 {/* Detalle expandible de productos */}
                 {abierta && (
