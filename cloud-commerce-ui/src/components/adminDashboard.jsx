@@ -695,7 +695,7 @@ export const AdminDashboard = ({}) => {
                       </td>
                       <td className="px-6 py-4">
                         <span className="bg-rose-50 text-rose-700 text-xs font-bold px-2.5 py-1 rounded-full">
-                          {venta.estado || "N/D"}
+                          {venta.estadoPago || venta.estado || "N/D"}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right font-bold text-rose-900">
